@@ -163,9 +163,9 @@
     box-shadow: 0 16px 40px rgba(0,0,0,0.4);
   }
   .tile-icon img {
-    width: 40px; height: 40px;
+    width: 46px; height: 46px;
     object-fit: contain;
-    border-radius: 8px;
+    border-radius: 10px;
   }
   .tile-icon .tile-fallback {
     font-size: 28px;
@@ -869,13 +869,81 @@ function updateSearchIcon(key) {
 }
 
 // ═══════════════════════════════════════════
-//  FAVICON
+//  ICÔNES DE TUILES
 // ═══════════════════════════════════════════
-function getFaviconUrl(url) {
-  try {
-    const origin = new URL(url).origin;
-    return `https://www.google.com/s2/favicons?domain=${origin}&sz=64`;
-  } catch { return ''; }
+
+// Palette de couleurs vives pour les initiales
+const ICON_COLORS = [
+  ['#E8453C','#C0392B'], ['#E67E22','#CA6F1E'], ['#F1C40F','#D4AC0D'],
+  ['#2ECC71','#27AE60'], ['#1ABC9C','#17A589'], ['#3498DB','#2980B9'],
+  ['#9B59B6','#8E44AD'], ['#E91E8C','#C2185B'], ['#00BCD4','#0097A7'],
+  ['#FF5722','#E64A19'], ['#607D8B','#455A64'], ['#795548','#5D4037'],
+];
+
+function getIconColor(name) {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return ICON_COLORS[Math.abs(hash) % ICON_COLORS.length];
+}
+
+// Génère un data-URL PNG d'une icône initiales via Canvas
+function makeInitialsIcon(name, size = 128) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const [color1, color2] = getIconColor(name);
+
+  // Fond dégradé
+  const grad = ctx.createLinearGradient(0, 0, size, size);
+  grad.addColorStop(0, color1);
+  grad.addColorStop(1, color2);
+  const r = size * 0.18;
+  ctx.beginPath();
+  ctx.moveTo(r, 0);
+  ctx.lineTo(size - r, 0);
+  ctx.quadraticCurveTo(size, 0, size, r);
+  ctx.lineTo(size, size - r);
+  ctx.quadraticCurveTo(size, size, size - r, size);
+  ctx.lineTo(r, size);
+  ctx.quadraticCurveTo(0, size, 0, size - r);
+  ctx.lineTo(0, r);
+  ctx.quadraticCurveTo(0, 0, r, 0);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Initiales (1 ou 2 lettres)
+  const letters = name.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('');
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.font = `600 ${size * (letters.length > 1 ? 0.38 : 0.46)}px "Outfit", "Segoe UI", sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(letters, size / 2, size / 2 + size * 0.02);
+
+  return canvas.toDataURL('image/png');
+}
+
+// Vérifie si un favicon Google est l'icône générique (16×16)
+// sans crossOrigin pour éviter les blocages CORS
+function loadFaviconOrFallback(faviconUrl, name, imgEl) {
+  const testImg = new Image();
+
+  testImg.onload = () => {
+    if (testImg.naturalWidth <= 16 && testImg.naturalHeight <= 16) {
+      // Favicon générique trop petit → icône initiales
+      imgEl.src = makeInitialsIcon(name);
+    } else {
+      // Vrai favicon → on l'affiche
+      imgEl.src = faviconUrl;
+    }
+  };
+
+  testImg.onerror = () => {
+    imgEl.src = makeInitialsIcon(name);
+  };
+
+  // Pas de crossOrigin : on lit juste naturalWidth/naturalHeight
+  testImg.src = faviconUrl;
 }
 
 // ═══════════════════════════════════════════
@@ -1044,25 +1112,17 @@ function renderTiles() {
     const iconDiv = document.createElement('div');
     iconDiv.className = 'tile-icon';
 
-    const faviconUrl = getFaviconUrl(tile.url);
-    if (faviconUrl) {
-      const img = document.createElement('img');
-      img.src = faviconUrl;
-      img.alt = tile.name;
-      img.onerror = () => {
-        img.remove();
-        const span = document.createElement('span');
-        span.className = 'tile-fallback';
-        span.textContent = tile.name[0]?.toUpperCase() || '?';
-        iconDiv.appendChild(span);
-      };
-      iconDiv.appendChild(img);
-    } else {
-      const span = document.createElement('span');
-      span.className = 'tile-fallback';
-      span.textContent = tile.name[0]?.toUpperCase() || '?';
-      iconDiv.appendChild(span);
+    // Créer l'img et laisser loadFaviconOrFallback décider favicon vs initiales
+    const img = document.createElement('img');
+    img.alt = tile.name;
+    try {
+      const origin = new URL(tile.url).origin;
+      const faviconUrl = `https://www.google.com/s2/favicons?domain=${origin}&sz=64`;
+      loadFaviconOrFallback(faviconUrl, tile.name, img);
+    } catch {
+      img.src = makeInitialsIcon(tile.name);
     }
+    iconDiv.appendChild(img);
 
     // Bouton supprimer
     const delBtn = document.createElement('button');
@@ -1152,10 +1212,21 @@ function closeModal() {
 function updatePreview(name, url) {
   const img = document.getElementById('preview-favicon');
   const span = document.getElementById('preview-name');
-  const faviconUrl = getFaviconUrl(url);
-  img.src = faviconUrl || '';
-  img.style.display = faviconUrl ? 'block' : 'none';
   span.textContent = name || 'Aperçu';
+  img.style.display = 'block';
+  if (!name && !url) {
+    img.src = '';
+    img.style.display = 'none';
+    return;
+  }
+  try {
+    const origin = new URL(url).origin;
+    const faviconUrl = `https://www.google.com/s2/favicons?domain=${origin}&sz=64`;
+    loadFaviconOrFallback(faviconUrl, name || url, img);
+  } catch {
+    img.src = name ? makeInitialsIcon(name) : '';
+    img.style.display = name ? 'block' : 'none';
+  }
 }
 
 document.getElementById('input-url').addEventListener('input', (e) => {
