@@ -364,19 +364,27 @@
     position: fixed;
     bottom: 78px; right: 24px;
     width: 310px;
+    max-height: calc(100dvh - 100px); /* ne jamais dépasser la fenêtre */
+    overflow-y: auto;
+    overscroll-behavior: contain;
     background: rgba(18,20,26,0.97);
     border: 1px solid rgba(255,255,255,0.11);
     border-radius: 20px;
     box-shadow: 0 24px 64px rgba(0,0,0,0.65);
     z-index: 119;
-    overflow: hidden;
     /* Animation */
     transform-origin: bottom right;
     transform: scale(0.92) translateY(8px);
     opacity: 0;
     pointer-events: none;
     transition: transform 0.22s cubic-bezier(.34,1.4,.64,1), opacity 0.18s ease;
+    /* Scrollbar discrète */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
   }
+  #settings-panel::-webkit-scrollbar { width: 4px; }
+  #settings-panel::-webkit-scrollbar-track { background: transparent; }
+  #settings-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
   #settings-panel.open {
     transform: scale(1) translateY(0);
     opacity: 1;
@@ -674,6 +682,13 @@
         <span class="sp-engine-name">Ecosia</span>
       </div>
 
+      <div class="sp-engine" data-engine="perplexity">
+        <div class="sp-engine-logo">
+          <img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64" alt="Perplexity" />
+        </div>
+        <span class="sp-engine-name">Perplexity</span>
+      </div>
+
     </div>
   </div>
 
@@ -795,6 +810,7 @@ const ENGINES = {
   yahoo:      { name: 'Yahoo',      action: 'https://search.yahoo.com/search', param: 'p' },
   qwant:      { name: 'Qwant',      action: 'https://www.qwant.com/',          param: 'q' },
   ecosia:     { name: 'Ecosia',     action: 'https://www.ecosia.org/search',   param: 'q' },
+  perplexity: { name: 'Perplexity', action: 'https://www.perplexity.ai/search', param: 'q' },
 };
 
 // Tuiles par défaut
@@ -861,6 +877,7 @@ const ENGINE_ICONS = {
   yahoo: `<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#6001D2" d="M0 4h5.5l3.5 6 3.5-6H18l-7 11v5H7v-5L0 4z"/><circle fill="#6001D2" cx="20" cy="17" r="3"/></svg>`,
   qwant: `<img src="https://www.google.com/s2/favicons?domain=qwant.com&sz=64" width="20" height="20" style="border-radius:4px">`,
   ecosia: `<img src="https://www.google.com/s2/favicons?domain=ecosia.org&sz=64" width="20" height="20" style="border-radius:4px">`,
+  perplexity: `<img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64" width="20" height="20" style="border-radius:4px">`,
 };
 
 function updateSearchIcon(key) {
