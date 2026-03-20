@@ -625,7 +625,7 @@ input[type=range].sp-slider::-webkit-slider-thumb:hover { transform: scale(1.2);
       <div class="sp-row-icon">🌄</div>
       <div class="sp-row-text">
         <strong>Carrousel Unsplash</strong>
-        <span>29 paysages, rotation automatique</span>
+        <span>39 images, rotation automatique</span>
       </div>
     </div>
     <div class="sp-slider-row" id="sp-interval-row">
@@ -935,35 +935,45 @@ updateClock();
 
 // FIX : doublon supprimé (photo-1500534314209 apparaissait deux fois)
 const BACKGROUNDS = [
-  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80', desc: 'Montagne',         name: 'Samuel Ferrara',    user: 'samferrara' },
-  { url: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80', desc: 'Lac de montagne',  name: 'Tom Mrazek',        user: 'tommrazek' },
-  { url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=80', desc: 'Forêt verte',      name: 'Paul Gilmore',      user: 'paulgilmore_' },
-  { url: 'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=1920&q=80', desc: 'Désert',           name: 'Ian Keefe',         user: 'iankeefe' },
-  { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80', desc: 'Plage tropicale',  name: 'Sean O. Rourke',    user: 'sean_orourke' },
-  { url: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1920&q=80', desc: 'Champs jaune',     name: 'Geetanjal Khanna',  user: 'geetanjalkh' },
-  { url: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1920&q=80', desc: 'Cascade',          name: 'Nitish Meena',      user: 'nitishm' },
-  { url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80', desc: 'Cimes enneigées',  name: 'Kalen Emsley',      user: 'kalenemsley' },
-  { url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80', desc: 'Voie lactée',      name: 'Vincentiu Solomon', user: 'vincentiu_solomon' },
-  { url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80', desc: 'Forêt mystique',   name: 'Lukasz Szmigiel',   user: 'szmigieldesign' },
-  { url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80', desc: 'Brume matinale',   name: 'Jonatan Pie',       user: 'r3dmax' },
-  { url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=80', desc: 'Côte rocheuse',    name: 'Alex Azabache',     user: 'alexazabache' },
-  { url: 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1920&q=80', desc: 'Aurore boréale',   name: 'Lightscape',        user: 'lightscape' },
-  { url: 'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=1920&q=80', desc: 'Lac miroir',       name: 'Dave Hoefler',      user: 'davehoefler' },
-  { url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1920&q=80', desc: 'Ciel orageux',     name: 'Raychel Sanner',    user: 'raychelsanner' },
-  { url: 'https://images.unsplash.com/photo-1455218873509-8097305ee378?w=1920&q=80', desc: 'Forêt de bambou',  name: 'Luca Bravo',        user: 'lucabravo' },
-  { url: 'https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=1920&q=80', desc: 'Vallée alpine',    name: 'Ales Krivec',       user: 'aleskrivec' },
-  { url: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1920&q=80', desc: 'Tulipes',          name: 'Ylanite Koppens',   user: 'anete_lusina' },
-  { url: 'https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=1920&q=80', desc: 'Lever de soleil',  name: 'Dawid Zawiła',      user: 'davealmine' },
-  { url: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=1920&q=80', desc: 'Lune sur la mer',  name: 'Yoann Boyer',       user: 'yoannboyer' },
-  { url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&q=80', desc: 'Prairie dorée',    name: 'Ales Krivec',       user: 'aleskrivec' },
-  { url: 'https://images.unsplash.com/photo-1414609245224-aea64ab47cb3?w=1920&q=80', desc: 'Fjord',            name: 'John Towner',       user: 'heytowner' },
-  { url: 'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1920&q=80', desc: 'Rayons de soleil', name: 'Fabrice Villard',   user: 'fabulu' },
-  { url: 'https://images.unsplash.com/photo-1491555103944-7c647fd857e6?w=1920&q=80', desc: 'Montagne enneigée',name: 'Kace Rodriguez',    user: 'kace_rod' },
-  { url: 'https://images.unsplash.com/photo-1518098268026-4e89f1a2cd8e?w=1920&q=80', desc: 'Nuit étoilée',    name: 'Benjamin Voros',    user: 'vorosbenj' },
-  { url: 'https://images.unsplash.com/photo-1465189684280-6a8fa9b19a7a?w=1920&q=80', desc: 'Dune de sable',   name: 'USGS',              user: 'usgs' },
-  { url: 'https://images.unsplash.com/photo-1500043204854-6cb9aba28745?w=1920&q=80', desc: 'Volcan',           name: 'Clint McKoy',       user: 'clintmckoy' },
-  { url: 'https://images.unsplash.com/photo-1484291470158-b8f8d608850d?w=1920&q=80', desc: 'Fjord norvégien',  name: 'Arto Marttinen',    user: 'wandervisions' },
-  { url: 'https://images.unsplash.com/photo-1552083375-1447ce886485?w=1920&q=80', desc: 'Cerisiers',       name: 'kazuend',           user: 'kazuend' },
+  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1455218873509-8097305ee378?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1531366936337-7c912a4589a7?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1491555103944-7c647fd857e6?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1518098268026-4e89f1a2cd8e?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1465189684280-6a8fa9b19a7a?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1562016600-ece13e8ba570?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1484291470158-b8f8d608850d?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1552083375-1447ce886485?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1464207687429-7505649dae38?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1542224566-6e85f2e6772f?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1519338381761-c7523edc1f46?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1507041957456-9c397ce39c97?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1536147116438-62679a5e01f2?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1520962880247-cfaf541c8724?w=1920&q=80' },
+  { url: 'https://images.unsplash.com/photo-1544198365-f5d60b6d8190?w=1920&q=80' },
 ];
 
 function initBackgrounds() {
@@ -1060,7 +1070,7 @@ function setBg(idx, immediate = false) {
     activeSlot = nextSlot;
 
     document.getElementById('photo-credit').innerHTML =
-      `Photo par <a href="https://unsplash.com/@${bg.user}?utm_source=portail&utm_medium=referral" target="_blank">${bg.name}</a> sur <a href="https://unsplash.com/?utm_source=portail&utm_medium=referral" target="_blank">Unsplash</a>`;
+      `Photo via <a href="https://unsplash.com/?utm_source=portail&utm_medium=referral" target="_blank">Unsplash</a>`;
   };
 
   if (immediate) {
