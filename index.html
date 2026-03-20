@@ -5,592 +5,544 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Portail</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --glass: rgba(255,255,255,0.10);
-    --glass-border: rgba(255,255,255,0.18);
-    --glass-hover: rgba(255,255,255,0.18);
-    --shadow: 0 8px 32px rgba(0,0,0,0.35);
-    --radius: 16px;
-    --tile-size: 88px;
-    --accent: #4f9eff;
-  }
+:root {
+  --glass: rgba(255,255,255,0.10);
+  --glass-border: rgba(255,255,255,0.18);
+  --glass-hover: rgba(255,255,255,0.18);
+  --shadow: 0 8px 32px rgba(0,0,0,0.35);
+  --radius: 16px;
+  --tile-size: 88px;
+  --accent: #4f9eff;
+}
 
-  body {
-    font-family: 'Outfit', sans-serif;
-    min-height: 100vh;
-    overflow: hidden;
-    color: #fff;
-    cursor: default;
-    user-select: none;
-  }
+body {
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow: hidden;
+  color: #fff;
+  cursor: default;
+  user-select: none;
+}
 
-  /* ── Fond ── */
-  #bg-container {
-    position: fixed; inset: 0; z-index: 0;
-  }
-  .bg-slide {
-    position: absolute; inset: 0;
-    background-size: cover;
-    background-position: center;
-    opacity: 0;
-    z-index: 0;
-    transition: opacity 1.8s ease;
-  }
-  .bg-slide.active {
-    opacity: 1;
-    z-index: 1;
-  }
-  .bg-slide.fading-out {
-    opacity: 0;
-    z-index: 0;
-    transition: opacity 1.8s ease;
-  }
+/* ── Fond ── */
+#bg-container {
+  position: fixed; inset: 0; z-index: 0;
+}
+.bg-slide {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 1.8s ease;
+}
+.bg-slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+.bg-slide.fading-out {
+  opacity: 0;
+  z-index: 0;
+  transition: opacity 1.8s ease;
+}
+.bg-overlay {
+  position: fixed; inset: 0; z-index: 1;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.25) 0%,
+    rgba(0,0,0,0.10) 40%,
+    rgba(0,0,0,0.45) 100%
+  );
+}
 
-  .bg-overlay {
-    position: fixed; inset: 0; z-index: 1;
-    background: linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.25) 0%,
-      rgba(0,0,0,0.10) 40%,
-      rgba(0,0,0,0.45) 100%
-    );
-  }
+/* ── Layout principal ── */
+#app {
+  position: relative; z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 40px;
+  padding: 32px;
+}
 
-  /* ── Layout principal ── */
-  #app {
-    position: relative; z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    gap: 40px;
-    padding: 32px;
-  }
+/* ── Heure & Date ── */
+#clock-block { text-align: center; }
+#clock {
+  font-size: clamp(52px, 8vw, 88px);
+  font-weight: 300;
+  letter-spacing: -2px;
+  text-shadow: 0 2px 24px rgba(0,0,0,0.4);
+  line-height: 1;
+}
+#date {
+  font-size: 15px;
+  font-weight: 400;
+  opacity: 0.75;
+  margin-top: 6px;
+  letter-spacing: 0.5px;
+  text-transform: capitalize;
+}
 
-  /* ── Heure & Date ── */
-  #clock-block { text-align: center; }
-  #clock {
-    font-size: clamp(52px, 8vw, 88px);
-    font-weight: 300;
-    letter-spacing: -2px;
-    text-shadow: 0 2px 24px rgba(0,0,0,0.4);
-    line-height: 1;
-  }
-  #date {
-    font-size: 15px;
-    font-weight: 400;
-    opacity: 0.75;
-    margin-top: 6px;
-    letter-spacing: 0.5px;
-    text-transform: capitalize;
-  }
+/* ── Barre de recherche ── */
+#search-wrapper {
+  width: 100%;
+  max-width: 580px;
+}
+#search-form {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.92);
+  border-radius: 50px;
+  padding: 0 20px 0 20px;
+  height: 52px;
+  box-shadow: var(--shadow);
+  gap: 12px;
+  transition: box-shadow 0.2s;
+}
+#search-form:focus-within {
+  box-shadow: 0 0 0 3px rgba(79,158,255,0.5), var(--shadow);
+}
+#search-form svg { flex-shrink: 0; }
+#search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  color: #222;
+}
+#search-input::placeholder { color: #aaa; }
 
-  /* ── Barre de recherche ── */
-  #search-wrapper {
-    width: 100%;
-    max-width: 580px;
-  }
-  #search-form {
-    display: flex;
-    align-items: center;
-    background: rgba(255,255,255,0.92);
-    border-radius: 50px;
-    padding: 0 20px 0 20px;
-    height: 52px;
-    box-shadow: var(--shadow);
-    gap: 12px;
-    transition: box-shadow 0.2s;
-  }
-  #search-form:focus-within {
-    box-shadow: 0 0 0 3px rgba(79,158,255,0.5), var(--shadow);
-  }
-  #search-form svg { flex-shrink: 0; }
-  #search-input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    outline: none;
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    color: #222;
-  }
-  #search-input::placeholder { color: #aaa; }
+/* ── Grille de tuiles ── */
+#tiles-section { width: 100%; }
+#tiles-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
+  padding: 0 40px;
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  position: relative;
+}
+.tile-icon {
+  width: var(--tile-size);
+  height: var(--tile-size);
+  border-radius: var(--radius);
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), background 0.18s, box-shadow 0.18s;
+  overflow: hidden;
+}
+.tile:hover .tile-icon {
+  transform: translateY(-4px) scale(1.06);
+  background: var(--glass-hover);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+.tile-icon img {
+  width: 46px; height: 46px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+.tile-icon .tile-fallback {
+  font-size: 28px;
+  line-height: 1;
+}
+.tile-label {
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  max-width: 88px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+  opacity: 0.90;
+}
 
-  /* ── Grille de tuiles ── */
-  #tiles-section { width: 100%; }
+/* Bouton supprimer (apparaît au survol) */
+.tile-delete {
+  position: absolute;
+  top: -6px; right: -6px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(220,50,50,0.85);
+  border: none; cursor: pointer;
+  color: #fff; font-size: 13px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  z-index: 10;
+  transition: transform 0.15s;
+}
+.tile-delete:hover { transform: scale(1.15); }
+body.edit-mode .tile-delete { display: flex; }
+body.edit-mode .tile:hover .tile-icon {
+  transform: rotate(-2deg) scale(1.03);
+}
 
-  #tiles-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    width: 100%;
-    padding: 0 40px;
-  }
+/* Bouton Ajouter */
+#add-tile-btn .tile-icon {
+  background: rgba(255,255,255,0.08);
+  border: 2px dashed rgba(255,255,255,0.35);
+}
+#add-tile-btn:hover .tile-icon {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.6);
+}
+#add-tile-btn .tile-fallback { opacity: 0.6; font-size: 32px; }
 
-  .tile {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    position: relative;
-  }
+/* ── Bouton engrenage ── */
+#settings-btn {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: rgba(255,255,255,0.75);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow);
+  transition: background 0.2s, transform 0.35s, color 0.2s;
+  z-index: 120;
+}
+#settings-btn:hover { background: var(--glass-hover); color: #fff; }
+#settings-btn.open {
+  background: rgba(79,158,255,0.25);
+  border-color: var(--accent);
+  color: #fff;
+  transform: rotate(90deg);
+}
 
-  .tile-icon {
-    width: var(--tile-size);
-    height: var(--tile-size);
-    border-radius: var(--radius);
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--shadow);
-    transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), background 0.18s, box-shadow 0.18s;
-    overflow: hidden;
-  }
-  .tile:hover .tile-icon {
-    transform: translateY(-4px) scale(1.06);
-    background: var(--glass-hover);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
-  }
-  .tile-icon img {
-    width: 46px; height: 46px;
-    object-fit: contain;
-    border-radius: 10px;
-  }
-  .tile-icon .tile-fallback {
-    font-size: 28px;
-    line-height: 1;
-  }
-  .tile-label {
-    font-size: 12px;
-    font-weight: 500;
-    text-align: center;
-    max-width: 88px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow: 0 1px 6px rgba(0,0,0,0.5);
-    opacity: 0.90;
-  }
+/* ── Panneau de configuration ── */
+#settings-panel {
+  position: fixed;
+  bottom: 78px; right: 24px;
+  width: 310px;
+  max-height: calc(100dvh - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: rgba(18,20,26,0.97);
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.65);
+  z-index: 119;
+  transform-origin: bottom right;
+  transform: scale(0.92) translateY(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.22s cubic-bezier(.34,1.4,.64,1), opacity 0.18s ease;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.15) transparent;
+}
+#settings-panel::-webkit-scrollbar { width: 4px; }
+#settings-panel::-webkit-scrollbar-track { background: transparent; }
+#settings-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+#settings-panel.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
 
-  /* Bouton supprimer (apparaît au survol) */
-  .tile-delete {
-    position: absolute;
-    top: -6px; right: -6px;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    background: rgba(220,50,50,0.85);
-    border: none; cursor: pointer;
-    color: #fff; font-size: 13px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    z-index: 10;
-    transition: transform 0.15s;
-  }
-  .tile-delete:hover { transform: scale(1.15); }
-  body.edit-mode .tile-delete { display: flex; }
-  body.edit-mode .tile:hover .tile-icon {
-    transform: rotate(-2deg) scale(1.03);
-  }
+/* En-tête panneau */
+.sp-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.sp-header h2 { font-size: 15px; font-weight: 600; color: #fff; }
+.sp-close {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); border: none;
+  color: rgba(255,255,255,0.5); font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s;
+}
+.sp-close:hover { background: rgba(255,255,255,0.15); color: #fff; }
 
-  /* Bouton Ajouter */
-  #add-tile-btn .tile-icon {
-    background: rgba(255,255,255,0.08);
-    border: 2px dashed rgba(255,255,255,0.35);
-  }
-  #add-tile-btn:hover .tile-icon {
-    background: rgba(255,255,255,0.15);
-    border-color: rgba(255,255,255,0.6);
-  }
-  #add-tile-btn .tile-fallback { opacity: 0.6; font-size: 32px; }
+/* Sections */
+.sp-section {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.sp-section:last-child { border-bottom: none; }
+.sp-section-title {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 12px;
+}
 
-  /* ── Bouton mode édition ── */
-  #edit-btn {
-    position: fixed;
-    bottom: 24px; right: 24px;
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: #fff;
-    border-radius: 50px;
-    padding: 10px 20px;
-    font-family: 'Outfit', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
-    box-shadow: var(--shadow);
-    transition: background 0.2s, transform 0.2s;
-    z-index: 100;
-  }
-  #edit-btn:hover { background: var(--glass-hover); transform: scale(1.04); }
-  body.edit-mode #edit-btn { background: rgba(79,158,255,0.35); border-color: var(--accent); }
+/* Lignes d'action */
+.sp-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border: 1px solid transparent;
+}
+.sp-row:hover { background: rgba(255,255,255,0.06); }
+.sp-row.active {
+  background: rgba(79,158,255,0.12);
+  border-color: rgba(79,158,255,0.3);
+}
+.sp-row-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 17px;
+}
+.sp-row.active .sp-row-icon { background: rgba(79,158,255,0.2); }
+.sp-row-text { flex: 1; }
+.sp-row-text strong { display: block; font-size: 13px; font-weight: 500; color: #fff; }
+.sp-row-text span { font-size: 11px; color: rgba(255,255,255,0.4); }
 
-  /* ── Crédit photo ── */
-  #photo-credit {
-    position: fixed;
-    bottom: 20px; left: 24px;
-    font-size: 11px;
-    opacity: 0.55;
-    z-index: 50;
-  }
-  #photo-credit a { color: #fff; text-decoration: underline; }
+/* Aperçu image perso */
+#sp-bg-preview {
+  margin-top: 10px;
+  width: 100%; height: 72px;
+  border-radius: 10px;
+  border: 1px dashed rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.04);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; cursor: pointer; position: relative;
+  transition: border-color 0.2s;
+}
+#sp-bg-preview:hover { border-color: var(--accent); }
+#sp-bg-preview img { width: 100%; height: 100%; object-fit: cover; }
+#sp-bg-preview .sp-preview-placeholder {
+  font-size: 11px; color: rgba(255,255,255,0.35); text-align: center; padding: 8px;
+}
+#sp-bg-preview .sp-preview-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 500; color: #fff;
+  opacity: 0; transition: opacity 0.2s; border-radius: 10px;
+}
+#sp-bg-preview:hover .sp-preview-overlay { opacity: 1; }
 
-  /* ── Modal ── */
-  #modal-overlay {
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(4px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    animation: fadeIn 0.2s ease;
-  }
-  #modal-overlay.open { display: flex; }
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+/* Slider durée carrousel */
+.sp-slider-row {
+  padding: 10px 12px 4px;
+}
+.sp-slider-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px;
+}
+.sp-slider-header span { font-size: 13px; font-weight: 500; color: #fff; }
+.sp-slider-value {
+  font-size: 12px; font-weight: 600;
+  color: var(--accent);
+  background: rgba(79,158,255,0.12);
+  padding: 2px 10px; border-radius: 20px;
+}
+input[type=range].sp-slider {
+  -webkit-appearance: none;
+  width: 100%; height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.15);
+  outline: none; cursor: pointer;
+}
+input[type=range].sp-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(79,158,255,0.5);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+input[type=range].sp-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.sp-slider-hints {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: rgba(255,255,255,0.3);
+  margin-top: 6px;
+}
 
-  #modal {
-    background: rgba(30,33,40,0.95);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px;
-    padding: 32px;
-    width: 100%;
-    max-width: 400px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
-    animation: slideUp 0.25s cubic-bezier(.34,1.56,.64,1);
-  }
-  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+/* Mode édition tuiles (toggle switch) */
+.sp-toggle {
+  width: 36px; height: 20px; border-radius: 10px;
+  background: rgba(255,255,255,0.15);
+  position: relative; transition: background 0.2s; flex-shrink: 0;
+}
+.sp-toggle::after {
+  content: ''; position: absolute;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #fff; top: 3px; left: 3px;
+  transition: transform 0.2s;
+}
+.sp-toggle.on { background: var(--accent); }
+.sp-toggle.on::after { transform: translateX(16px); }
 
-  #modal h2 {
-    font-size: 20px; font-weight: 600;
-    margin-bottom: 24px;
-    color: #fff;
-  }
-  .field { margin-bottom: 16px; }
-  .field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0.6;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  .field input {
-    width: 100%;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 10px;
-    padding: 11px 14px;
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .field input:focus { border-color: var(--accent); }
-  .field input::placeholder { opacity: 0.4; }
+/* ── Crédit photo ── */
+#photo-credit {
+  position: fixed;
+  bottom: 20px; left: 24px;
+  font-size: 11px;
+  opacity: 0.55;
+  z-index: 50;
+}
+#photo-credit a { color: #fff; text-decoration: underline; }
 
-  .modal-preview {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 20px;
-    padding: 12px 14px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 10px;
-  }
-  .modal-preview img {
-    width: 32px; height: 32px;
-    border-radius: 6px;
-    object-fit: contain;
-  }
-  .modal-preview span { font-size: 13px; opacity: 0.7; }
+/* ── Toast notification ── */
+#toast {
+  position: fixed;
+  bottom: 78px; right: 24px;
+  background: rgba(18,20,26,0.97);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow);
+  z-index: 300;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s, transform 0.25s;
+  pointer-events: none;
+}
+#toast.show { opacity: 1; transform: translateY(0); }
 
-  .modal-actions {
-    display: flex; gap: 10px; margin-top: 8px;
-  }
-  .btn-cancel, .btn-save {
-    flex: 1; padding: 12px;
-    border-radius: 10px; border: none;
-    font-family: 'Outfit', sans-serif;
-    font-size: 14px; font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.2s, transform 0.15s;
-  }
-  .btn-cancel:hover, .btn-save:hover { opacity: 0.85; transform: scale(1.02); }
-  .btn-cancel { background: rgba(255,255,255,0.1); color: #fff; }
-  .btn-save { background: var(--accent); color: #fff; }
+/* ── Sélecteur moteur de recherche ── */
+.sp-engines {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.sp-engine {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6px;
+  padding: 10px 6px;
+  border-radius: 11px;
+  border: 1.5px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.sp-engine:hover { background: rgba(255,255,255,0.08); }
+.sp-engine.active {
+  border-color: var(--accent);
+  background: rgba(79,158,255,0.12);
+}
+.sp-engine-logo {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+}
+.sp-engine-logo img, .sp-engine-logo svg {
+  width: 24px; height: 24px; object-fit: contain;
+}
+.sp-engine-name {
+  font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+}
+.sp-engine.active .sp-engine-name { color: #fff; }
 
-  /* ── Bouton engrenage ── */
-  #settings-btn {
-    position: fixed;
-    bottom: 24px; right: 24px;
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: rgba(255,255,255,0.75);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: var(--shadow);
-    transition: background 0.2s, transform 0.35s, color 0.2s;
-    z-index: 120;
-  }
-  #settings-btn:hover { background: var(--glass-hover); color: #fff; }
-  #settings-btn.open {
-    background: rgba(79,158,255,0.25);
-    border-color: var(--accent);
-    color: #fff;
-    transform: rotate(90deg);
-  }
-
-  /* ── Panneau de configuration ── */
-  #settings-panel {
-    position: fixed;
-    bottom: 78px; right: 24px;
-    width: 310px;
-    max-height: calc(100dvh - 100px); /* ne jamais dépasser la fenêtre */
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    background: rgba(18,20,26,0.97);
-    border: 1px solid rgba(255,255,255,0.11);
-    border-radius: 20px;
-    box-shadow: 0 24px 64px rgba(0,0,0,0.65);
-    z-index: 119;
-    /* Animation */
-    transform-origin: bottom right;
-    transform: scale(0.92) translateY(8px);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.22s cubic-bezier(.34,1.4,.64,1), opacity 0.18s ease;
-    /* Scrollbar discrète */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.15) transparent;
-  }
-  #settings-panel::-webkit-scrollbar { width: 4px; }
-  #settings-panel::-webkit-scrollbar-track { background: transparent; }
-  #settings-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
-  #settings-panel.open {
-    transform: scale(1) translateY(0);
-    opacity: 1;
-    pointer-events: all;
-  }
-
-  /* En-tête panneau */
-  .sp-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 18px 20px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-  }
-  .sp-header h2 { font-size: 15px; font-weight: 600; color: #fff; }
-  .sp-close {
-    width: 26px; height: 26px; border-radius: 50%;
-    background: rgba(255,255,255,0.08); border: none;
-    color: rgba(255,255,255,0.5); font-size: 16px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, color 0.2s;
-  }
-  .sp-close:hover { background: rgba(255,255,255,0.15); color: #fff; }
-
-  /* Sections */
-  .sp-section {
-    padding: 16px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
-  .sp-section:last-child { border-bottom: none; }
-  .sp-section-title {
-    font-size: 10px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 1px;
-    color: rgba(255,255,255,0.35);
-    margin-bottom: 12px;
-  }
-
-  /* Lignes d'action */
-  .sp-row {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 12px;
-    border-radius: 11px;
-    cursor: pointer;
-    transition: background 0.15s;
-    border: 1px solid transparent;
-  }
-  .sp-row:hover { background: rgba(255,255,255,0.06); }
-  .sp-row.active {
-    background: rgba(79,158,255,0.12);
-    border-color: rgba(79,158,255,0.3);
-  }
-  .sp-row-icon {
-    width: 34px; height: 34px; border-radius: 9px;
-    background: rgba(255,255,255,0.07);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; font-size: 17px;
-  }
-  .sp-row.active .sp-row-icon { background: rgba(79,158,255,0.2); }
-  .sp-row-text { flex: 1; }
-  .sp-row-text strong { display: block; font-size: 13px; font-weight: 500; color: #fff; }
-  .sp-row-text span { font-size: 11px; color: rgba(255,255,255,0.4); }
-  .sp-row-badge {
-    font-size: 10px; padding: 2px 8px;
-    border-radius: 20px; font-weight: 600;
-    background: rgba(79,158,255,0.2); color: var(--accent);
-  }
-
-  /* Aperçu image perso */
-  #sp-bg-preview {
-    margin-top: 10px;
-    width: 100%; height: 72px;
-    border-radius: 10px;
-    border: 1px dashed rgba(255,255,255,0.18);
-    background: rgba(255,255,255,0.04);
-    display: flex; align-items: center; justify-content: center;
-    overflow: hidden; cursor: pointer; position: relative;
-    transition: border-color 0.2s;
-  }
-  #sp-bg-preview:hover { border-color: var(--accent); }
-  #sp-bg-preview img { width: 100%; height: 100%; object-fit: cover; }
-  #sp-bg-preview .sp-preview-placeholder {
-    font-size: 11px; color: rgba(255,255,255,0.35); text-align: center; padding: 8px;
-  }
-  #sp-bg-preview .sp-preview-overlay {
-    position: absolute; inset: 0; background: rgba(0,0,0,0.5);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 500; color: #fff;
-    opacity: 0; transition: opacity 0.2s; border-radius: 10px;
-  }
-  #sp-bg-preview:hover .sp-preview-overlay { opacity: 1; }
-
-  /* Slider durée carrousel */
-  .sp-slider-row {
-    padding: 10px 12px 4px;
-  }
-  .sp-slider-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 10px;
-  }
-  .sp-slider-header span { font-size: 13px; font-weight: 500; color: #fff; }
-  .sp-slider-value {
-    font-size: 12px; font-weight: 600;
-    color: var(--accent);
-    background: rgba(79,158,255,0.12);
-    padding: 2px 10px; border-radius: 20px;
-  }
-  input[type=range].sp-slider {
-    -webkit-appearance: none;
-    width: 100%; height: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.15);
-    outline: none; cursor: pointer;
-  }
-  input[type=range].sp-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 6px rgba(79,158,255,0.5);
-    cursor: pointer;
-    transition: transform 0.15s;
-  }
-  input[type=range].sp-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
-  .sp-slider-hints {
-    display: flex; justify-content: space-between;
-    font-size: 10px; color: rgba(255,255,255,0.3);
-    margin-top: 6px;
-  }
-
-  /* Mode édition tuiles (toggle switch) */
-  .sp-toggle {
-    width: 36px; height: 20px; border-radius: 10px;
-    background: rgba(255,255,255,0.15);
-    position: relative; transition: background 0.2s; flex-shrink: 0;
-  }
-  .sp-toggle::after {
-    content: ''; position: absolute;
-    width: 14px; height: 14px; border-radius: 50%;
-    background: #fff; top: 3px; left: 3px;
-    transition: transform 0.2s;
-  }
-  .sp-toggle.on { background: var(--accent); }
-  .sp-toggle.on::after { transform: translateX(16px); }
-
-  /* ── Crédit photo ── */
-  #photo-credit {
-    position: fixed;
-    bottom: 20px; left: 24px;
-    font-size: 11px;
-    opacity: 0.55;
-    z-index: 50;
-  }
-  #photo-credit a { color: #fff; text-decoration: underline; }
-
-  /* ── Toast notification ── */
-  #toast {
-    position: fixed;
-    bottom: 78px; right: 24px;
-    background: rgba(18,20,26,0.97);
-    border: 1px solid rgba(255,255,255,0.12);
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 500;
-    box-shadow: var(--shadow);
-    z-index: 300;
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.25s, transform 0.25s;
-    pointer-events: none;
-  }
-  #toast.show { opacity: 1; transform: translateY(0); }
-
-  /* ── Sélecteur moteur de recherche ── */
-  .sp-engines {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-  .sp-engine {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 6px;
-    padding: 10px 6px;
-    border-radius: 11px;
-    border: 1.5px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.04);
-    cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
-  }
-  .sp-engine:hover { background: rgba(255,255,255,0.08); }
-  .sp-engine.active {
-    border-color: var(--accent);
-    background: rgba(79,158,255,0.12);
-  }
-  .sp-engine-logo {
-    width: 28px; height: 28px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .sp-engine-logo img, .sp-engine-logo svg {
-    width: 24px; height: 24px; object-fit: contain;
-  }
-  .sp-engine-name {
-    font-size: 11px; font-weight: 500;
-    color: rgba(255,255,255,0.7);
-    text-align: center;
-  }
-  .sp-engine.active .sp-engine-name { color: #fff; }
+/* ── Modal ── */
+#modal-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+#modal-overlay.open { display: flex; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+#modal {
+  background: rgba(30,33,40,0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  animation: slideUp 0.25s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+#modal h2 {
+  font-size: 20px; font-weight: 600;
+  margin-bottom: 24px;
+  color: #fff;
+}
+.field { margin-bottom: 16px; }
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.6;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.field input {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.field input:focus { border-color: var(--accent); }
+.field input::placeholder { opacity: 0.4; }
+.modal-preview {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+}
+.modal-preview img {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+.modal-preview span { font-size: 13px; opacity: 0.7; }
+.modal-actions {
+  display: flex; gap: 10px; margin-top: 8px;
+}
+.btn-cancel, .btn-save {
+  flex: 1; padding: 12px;
+  border-radius: 10px; border: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-cancel:hover, .btn-save:hover { opacity: 0.85; transform: scale(1.02); }
+.btn-cancel { background: rgba(255,255,255,0.1); color: #fff; }
+.btn-save { background: var(--accent); color: #fff; }
 </style>
 </head>
 <body>
@@ -606,9 +558,7 @@
 
   <div id="search-wrapper">
     <form id="search-form" action="https://www.google.com/search" method="get" target="_blank">
-      <div id="search-engine-icon" style="display:flex;align-items:center;flex-shrink:0">
-        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      </div>
+      <div id="search-engine-icon" style="display:flex;align-items:center;flex-shrink:0"></div>
       <input id="search-input" type="text" name="q" placeholder="Rechercher avec Google" autocomplete="off" />
     </form>
   </div>
@@ -635,67 +585,15 @@
     <button class="sp-close" id="sp-close">×</button>
   </div>
 
-  <!-- Section Moteur de recherche -->
+  <!-- Section Moteur de recherche : généré dynamiquement par JS -->
   <div class="sp-section">
     <div class="sp-section-title">Moteur de recherche</div>
-    <div class="sp-engines" id="sp-engines">
-
-      <div class="sp-engine" data-engine="google">
-        <div class="sp-engine-logo">
-          <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        </div>
-        <span class="sp-engine-name">Google</span>
-      </div>
-
-      <div class="sp-engine" data-engine="bing">
-        <div class="sp-engine-logo">
-          <svg viewBox="0 0 24 24"><path fill="#008373" d="M5 2v16.5l4-1.5 2.5 1.5 5-3-3-2 .5-5L5 2z"/><path fill="#00b294" d="M9 17l2.5 1.5 5-3-3-2-4.5 3.5z"/></svg>
-        </div>
-        <span class="sp-engine-name">Bing</span>
-      </div>
-
-      <div class="sp-engine" data-engine="duckduckgo">
-        <div class="sp-engine-logo">
-          <img src="https://www.google.com/s2/favicons?domain=duckduckgo.com&sz=64" alt="DuckDuckGo" />
-        </div>
-        <span class="sp-engine-name">DuckDuckGo</span>
-      </div>
-
-      <div class="sp-engine" data-engine="yahoo">
-        <div class="sp-engine-logo">
-          <svg viewBox="0 0 24 24"><path fill="#6001D2" d="M0 4h5.5l3.5 6 3.5-6H18l-7 11v5H7v-5L0 4z"/><path fill="#6001D2" d="M17 13c0-2.2 1.8-4 4-4s3 1.8 3 4-1.8 4-4 4-3-1.8-3-4z"/></svg>
-        </div>
-        <span class="sp-engine-name">Yahoo</span>
-      </div>
-
-      <div class="sp-engine" data-engine="qwant">
-        <div class="sp-engine-logo">
-          <img src="https://www.google.com/s2/favicons?domain=qwant.com&sz=64" alt="Qwant" />
-        </div>
-        <span class="sp-engine-name">Qwant</span>
-      </div>
-
-      <div class="sp-engine" data-engine="ecosia">
-        <div class="sp-engine-logo">
-          <img src="https://www.google.com/s2/favicons?domain=ecosia.org&sz=64" alt="Ecosia" />
-        </div>
-        <span class="sp-engine-name">Ecosia</span>
-      </div>
-
-      <div class="sp-engine" data-engine="perplexity">
-        <div class="sp-engine-logo">
-          <img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64" alt="Perplexity" />
-        </div>
-        <span class="sp-engine-name">Perplexity</span>
-      </div>
-
-    </div>
+    <div class="sp-engines" id="sp-engines"></div>
   </div>
 
   <!-- Section Raccourcis -->
   <div class="sp-section">
     <div class="sp-section-title">Raccourcis</div>
-
     <div class="sp-row" id="sp-edit-toggle">
       <div class="sp-row-icon">✏️</div>
       <div class="sp-row-text">
@@ -704,7 +602,6 @@
       </div>
       <div class="sp-toggle" id="edit-toggle-switch"></div>
     </div>
-
     <div class="sp-row" id="sp-export">
       <div class="sp-row-icon">⬇️</div>
       <div class="sp-row-text">
@@ -712,7 +609,6 @@
         <span>Sauvegarder en fichier JSON</span>
       </div>
     </div>
-
     <div class="sp-row" id="sp-import">
       <div class="sp-row-icon">⬆️</div>
       <div class="sp-row-text">
@@ -725,25 +621,22 @@
   <!-- Section Fond d'écran -->
   <div class="sp-section">
     <div class="sp-section-title">Fond d'écran</div>
-
     <div class="sp-row" id="sp-opt-carousel">
       <div class="sp-row-icon">🌄</div>
       <div class="sp-row-text">
         <strong>Carrousel Unsplash</strong>
-        <span>30 paysages, rotation automatique</span>
+        <span>29 paysages, rotation automatique</span>
       </div>
     </div>
-
     <div class="sp-slider-row" id="sp-interval-row">
       <div class="sp-slider-header">
         <span>⏱ Durée par image</span>
         <div class="sp-slider-value" id="sp-interval-label">2 min</div>
       </div>
       <input type="range" class="sp-slider" id="sp-interval-slider"
-             min="10" max="600" step="10" value="120" />
+        min="10" max="600" step="10" value="120" />
       <div class="sp-slider-hints"><span>10 s</span><span>10 min</span></div>
     </div>
-
     <div class="sp-row" id="sp-opt-custom">
       <div class="sp-row-icon">📁</div>
       <div class="sp-row-text">
@@ -751,7 +644,6 @@
         <span>Choisir depuis votre disque</span>
       </div>
     </div>
-
     <div id="sp-bg-preview" style="display:none">
       <span class="sp-preview-placeholder">Cliquer pour choisir une image</span>
       <div class="sp-preview-overlay">🔄 Changer l'image</div>
@@ -793,103 +685,145 @@
 // ═══════════════════════════════════════════
 //  CONFIGURATION
 // ═══════════════════════════════════════════
-const UNSPLASH_TOPICS = [
-  'nature','architecture','travel','mountains','forest','ocean',
-  'city','abstract','sky','landscape'
-];
+
 const STORAGE_KEY     = 'portail_tiles_v2';
 const STORAGE_BG_KEY  = 'portail_bg_custom';
-const STORAGE_INT_KEY = 'portail_bg_interval'; // durée en secondes
+const STORAGE_INT_KEY = 'portail_bg_interval';
 const STORAGE_ENG_KEY = 'portail_engine';
-const DEFAULT_INTERVAL = 120; // 2 minutes par défaut
+const DEFAULT_INTERVAL = 120;
 
+// Source unique de vérité pour les moteurs de recherche
+// L'icône SVG/HTML est ici : le panneau est généré dynamiquement depuis cet objet
 const ENGINES = {
-  google:     { name: 'Google',     action: 'https://www.google.com/search',  param: 'q' },
-  bing:       { name: 'Bing',       action: 'https://www.bing.com/search',     param: 'q' },
-  duckduckgo: { name: 'DuckDuckGo', action: 'https://duckduckgo.com/',         param: 'q' },
-  yahoo:      { name: 'Yahoo',      action: 'https://search.yahoo.com/search', param: 'p' },
-  qwant:      { name: 'Qwant',      action: 'https://www.qwant.com/',          param: 'q' },
-  ecosia:     { name: 'Ecosia',     action: 'https://www.ecosia.org/search',   param: 'q' },
-  perplexity: { name: 'Perplexity', action: 'https://www.perplexity.ai/search', param: 'q' },
+  google: {
+    name: 'Google',
+    action: 'https://www.google.com/search', param: 'q',
+    icon: `<svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`,
+  },
+  bing: {
+    name: 'Bing',
+    action: 'https://www.bing.com/search', param: 'q',
+    icon: `<svg viewBox="0 0 24 24"><path fill="#008373" d="M5 2v16.5l4-1.5 2.5 1.5 5-3-3-2 .5-5L5 2z"/><path fill="#00b294" d="M9 17l2.5 1.5 5-3-3-2-4.5 3.5z"/></svg>`,
+  },
+  duckduckgo: {
+    name: 'DuckDuckGo',
+    action: 'https://duckduckgo.com/', param: 'q',
+    icon: `<img src="https://www.google.com/s2/favicons?domain=duckduckgo.com&sz=64" alt="DuckDuckGo" />`,
+  },
+  yahoo: {
+    name: 'Yahoo',
+    action: 'https://search.yahoo.com/search', param: 'p',
+    icon: `<svg viewBox="0 0 24 24"><path fill="#6001D2" d="M0 4h5.5l3.5 6 3.5-6H18l-7 11v5H7v-5L0 4z"/><path fill="#6001D2" d="M17 13c0-2.2 1.8-4 4-4s3 1.8 3 4-1.8 4-4 4-3-1.8-3-4z"/></svg>`,
+  },
+  qwant: {
+    name: 'Qwant',
+    action: 'https://www.qwant.com/', param: 'q',
+    icon: `<img src="https://www.google.com/s2/favicons?domain=qwant.com&sz=64" alt="Qwant" />`,
+  },
+  ecosia: {
+    name: 'Ecosia',
+    action: 'https://www.ecosia.org/search', param: 'q',
+    icon: `<img src="https://www.google.com/s2/favicons?domain=ecosia.org&sz=64" alt="Ecosia" />`,
+  },
+  perplexity: {
+    name: 'Perplexity',
+    action: 'https://www.perplexity.ai/search', param: 'q',
+    icon: `<img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64" alt="Perplexity" />`,
+  },
 };
 
 // Tuiles par défaut
 const DEFAULT_TILES = [
-  { id: '1', name: 'M365',   	 url: 'https://m365.cloud.microsoft/apps/' },
-  { id: '2', name: 'Teams',      url: 'https://teams.cloud.microsoft/' },
-  { id: '3', name: 'Outlook',      url: 'https://outlook.cloud.microsoft' },
-  { id: '4', name: 'OneNote',  url: 'https://onenote.cloud.microsoft' },
-  { id: '5', name: 'Ecole Directe',     url: 'https://www.ecoledirecte.com' },
+  { id: '1', name: 'M365',        url: 'https://m365.cloud.microsoft/apps/' },
+  { id: '2', name: 'Teams',       url: 'https://teams.cloud.microsoft/' },
+  { id: '3', name: 'Outlook',     url: 'https://outlook.cloud.microsoft' },
+  { id: '4', name: 'OneNote',     url: 'https://onenote.cloud.microsoft' },
+  { id: '5', name: 'Ecole Directe', url: 'https://www.ecoledirecte.com' },
 ];
 
 // ═══════════════════════════════════════════
 //  ÉTAT
 // ═══════════════════════════════════════════
-let tiles = loadTiles();
-let editMode = false;
-let editingId = null;
-let bgSlides = [];
+let tiles         = loadTiles();
+let editMode      = false;
+let editingId     = null;
+let bgSlides      = [];
 let currentBgIndex = 0;
-let bgImages = [];
-let bgIntervalId = null;
-let customBg = localStorage.getItem(STORAGE_BG_KEY) || null;
-let bgInterval = parseInt(localStorage.getItem(STORAGE_INT_KEY)) || DEFAULT_INTERVAL;
-let currentEngine = localStorage.getItem(STORAGE_ENG_KEY) || 'google';
+let bgImages      = [];
+let bgIntervalId  = null;
+let customBg      = safeStorage('get', STORAGE_BG_KEY);
+let bgInterval    = parseInt(safeStorage('get', STORAGE_INT_KEY)) || DEFAULT_INTERVAL;
+let currentEngine = safeStorage('get', STORAGE_ENG_KEY) || 'google';
 
 // ═══════════════════════════════════════════
-//  PERSISTANCE
+//  PERSISTANCE (avec gestion d'erreur localStorage)
 // ═══════════════════════════════════════════
+
+// FIX : wrapper unique pour localStorage — évite les exceptions quota/mode privé
+function safeStorage(op, key, value) {
+  try {
+    if (op === 'get')    return localStorage.getItem(key);
+    if (op === 'set')    return localStorage.setItem(key, value);
+    if (op === 'remove') return localStorage.removeItem(key);
+  } catch (e) {
+    console.warn('localStorage indisponible :', e);
+    return null;
+  }
+}
+
 function loadTiles() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = safeStorage('get', STORAGE_KEY);
     return raw ? JSON.parse(raw) : [...DEFAULT_TILES];
   } catch { return [...DEFAULT_TILES]; }
 }
+
 function saveTiles() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tiles));
+  safeStorage('set', STORAGE_KEY, JSON.stringify(tiles));
+}
+
+// ═══════════════════════════════════════════
+//  GÉNÉRATION DU PANNEAU MOTEURS (source unique)
+// ═══════════════════════════════════════════
+
+// FIX : le panneau est maintenant généré depuis l'objet ENGINES
+// → ajouter un moteur = modifier ENGINES seulement
+function buildEnginesPanel() {
+  const container = document.getElementById('sp-engines');
+  container.innerHTML = '';
+  for (const [key, engine] of Object.entries(ENGINES)) {
+    const div = document.createElement('div');
+    div.className = 'sp-engine';
+    div.dataset.engine = key;
+    div.innerHTML = `
+      <div class="sp-engine-logo">${engine.icon}</div>
+      <span class="sp-engine-name">${engine.name}</span>
+    `;
+    container.appendChild(div);
+  }
 }
 
 // ═══════════════════════════════════════════
 //  MOTEUR DE RECHERCHE
 // ═══════════════════════════════════════════
+
 function applyEngine(key) {
   const engine = ENGINES[key];
   if (!engine) return;
   currentEngine = key;
-  localStorage.setItem(STORAGE_ENG_KEY, key);
+  safeStorage('set', STORAGE_ENG_KEY, key);
 
-  // Mettre à jour le formulaire
   const form = document.getElementById('search-form');
   form.action = engine.action;
-  // Renommer le champ input pour correspondre au bon paramètre
   document.getElementById('search-input').name = engine.param;
-  // Mettre à jour le placeholder
-  document.getElementById('search-input').placeholder =
-    `Rechercher avec ${engine.name}`;
-  // Mettre à jour l'icône dans la barre de recherche
-  updateSearchIcon(key);
-}
-
-const ENGINE_ICONS = {
-  google: `<svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`,
-  bing: `<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#008373" d="M5 2v16.5l4-1.5 2.5 1.5 5-3-3-2 .5-5L5 2z"/><path fill="#00b294" d="M9 17l2.5 1.5 5-3-3-2-4.5 3.5z"/></svg>`,
-  duckduckgo: `<img src="https://www.google.com/s2/favicons?domain=duckduckgo.com&sz=64" width="20" height="20" style="border-radius:4px">`,
-  yahoo: `<svg width="20" height="20" viewBox="0 0 24 24"><path fill="#6001D2" d="M0 4h5.5l3.5 6 3.5-6H18l-7 11v5H7v-5L0 4z"/><circle fill="#6001D2" cx="20" cy="17" r="3"/></svg>`,
-  qwant: `<img src="https://www.google.com/s2/favicons?domain=qwant.com&sz=64" width="20" height="20" style="border-radius:4px">`,
-  ecosia: `<img src="https://www.google.com/s2/favicons?domain=ecosia.org&sz=64" width="20" height="20" style="border-radius:4px">`,
-  perplexity: `<img src="https://www.google.com/s2/favicons?domain=perplexity.ai&sz=64" width="20" height="20" style="border-radius:4px">`,
-};
-
-function updateSearchIcon(key) {
-  const iconSlot = document.getElementById('search-engine-icon');
-  if (iconSlot) iconSlot.innerHTML = ENGINE_ICONS[key] || ENGINE_ICONS.google;
+  document.getElementById('search-input').placeholder = `Rechercher avec ${engine.name}`;
+  document.getElementById('search-engine-icon').innerHTML = engine.icon;
 }
 
 // ═══════════════════════════════════════════
 //  ICÔNES DE TUILES
 // ═══════════════════════════════════════════
 
-// Palette de couleurs vives pour les initiales
 const ICON_COLORS = [
   ['#E8453C','#C0392B'], ['#E67E22','#CA6F1E'], ['#F1C40F','#D4AC0D'],
   ['#2ECC71','#27AE60'], ['#1ABC9C','#17A589'], ['#3498DB','#2980B9'],
@@ -903,21 +837,21 @@ function getIconColor(name) {
   return ICON_COLORS[Math.abs(hash) % ICON_COLORS.length];
 }
 
-// Génère un data-URL PNG d'une icône initiales via Canvas
+// FIX : attend que la fonte Outfit soit chargée avant de dessiner sur le canvas
+// pour éviter le rendu en fallback système (Times New Roman)
 function makeInitialsIcon(name, size = 128) {
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = size;
   const ctx = canvas.getContext('2d');
   const [color1, color2] = getIconColor(name);
 
-  // Fond dégradé
   const grad = ctx.createLinearGradient(0, 0, size, size);
   grad.addColorStop(0, color1);
   grad.addColorStop(1, color2);
+
   const r = size * 0.18;
   ctx.beginPath();
-  ctx.moveTo(r, 0);
-  ctx.lineTo(size - r, 0);
+  ctx.moveTo(r, 0); ctx.lineTo(size - r, 0);
   ctx.quadraticCurveTo(size, 0, size, r);
   ctx.lineTo(size, size - r);
   ctx.quadraticCurveTo(size, size, size - r, size);
@@ -929,7 +863,6 @@ function makeInitialsIcon(name, size = 128) {
   ctx.fillStyle = grad;
   ctx.fill();
 
-  // Initiales (1 ou 2 lettres)
   const letters = name.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('');
   ctx.fillStyle = 'rgba(255,255,255,0.95)';
   ctx.font = `600 ${size * (letters.length > 1 ? 0.38 : 0.46)}px "Outfit", "Segoe UI", sans-serif`;
@@ -940,32 +873,43 @@ function makeInitialsIcon(name, size = 128) {
   return canvas.toDataURL('image/png');
 }
 
-// Vérifie si un favicon Google est l'icône générique (16×16)
-// sans crossOrigin pour éviter les blocages CORS
+// FIX : fonction utilitaire partagée entre renderTiles et updatePreview
+// → élimine la duplication du bloc try/catch favicon
+function getFaviconUrl(url) {
+  try {
+    const origin = new URL(url).origin;
+    return `https://www.google.com/s2/favicons?domain=${origin}&sz=64`;
+  } catch {
+    return null;
+  }
+}
+
+// Vérifie si le favicon Google est l'icône générique (16×16) et bascule sur les initiales si besoin
 function loadFaviconOrFallback(faviconUrl, name, imgEl) {
   const testImg = new Image();
-
   testImg.onload = () => {
-    if (testImg.naturalWidth <= 16 && testImg.naturalHeight <= 16) {
-      // Favicon générique trop petit → icône initiales
-      imgEl.src = makeInitialsIcon(name);
-    } else {
-      // Vrai favicon → on l'affiche
-      imgEl.src = faviconUrl;
-    }
+    imgEl.src = (testImg.naturalWidth <= 16 && testImg.naturalHeight <= 16)
+      ? makeInitialsIcon(name)
+      : faviconUrl;
   };
-
-  testImg.onerror = () => {
-    imgEl.src = makeInitialsIcon(name);
-  };
-
-  // Pas de crossOrigin : on lit juste naturalWidth/naturalHeight
+  testImg.onerror = () => { imgEl.src = makeInitialsIcon(name); };
   testImg.src = faviconUrl;
+}
+
+// FIX : résolution d'icône centralisée, utilisée par renderTiles ET updatePreview
+function resolveIcon(url, name, imgEl) {
+  const faviconUrl = getFaviconUrl(url);
+  if (faviconUrl) {
+    loadFaviconOrFallback(faviconUrl, name, imgEl);
+  } else {
+    imgEl.src = makeInitialsIcon(name);
+  }
 }
 
 // ═══════════════════════════════════════════
 //  HORLOGE
 // ═══════════════════════════════════════════
+
 function updateClock() {
   const now = new Date();
   document.getElementById('clock').textContent =
@@ -977,40 +921,40 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // ═══════════════════════════════════════════
-//  FOND D'ÉCRAN (Unsplash via source.unsplash.com)
+//  FOND D'ÉCRAN
 // ═══════════════════════════════════════════
-// Chaque image est un objet autonome : url + crédit toujours liés ensemble
+
+// FIX : doublon supprimé (photo-1500534314209 apparaissait deux fois)
 const BACKGROUNDS = [
-  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80', desc: 'Montagne',        name: 'Samuel Ferrara',     user: 'samferrara' },
-  { url: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80', desc: 'Lac de montagne', name: 'Tom Mrazek',         user: 'tommrazek' },
-  { url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=80', desc: 'Forêt verte',     name: 'Paul Gilmore',       user: 'paulgilmore_' },
-  { url: 'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=1920&q=80', desc: 'Désert',          name: 'Ian Keefe',          user: 'iankeefe' },
-  { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80', desc: 'Plage tropicale', name: 'Sean O. Rourke',     user: 'sean_orourke' },
-  { url: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1920&q=80', desc: 'Champs jaune',    name: 'Geetanjal Khanna',   user: 'geetanjalkh' },
-  { url: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1920&q=80', desc: 'Cascade',         name: 'Nitish Meena',       user: 'nitishm' },
-  { url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80', desc: 'Cimes enneigées', name: 'Kalen Emsley',       user: 'kalenemsley' },
-  { url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80', desc: 'Voie lactée',     name: 'Vincentiu Solomon',  user: 'vincentiu_solomon' },
-  { url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80', desc: 'Forêt mystique',  name: 'Lukasz Szmigiel',    user: 'szmigieldesign' },
-  { url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80', desc: 'Brume matinale',  name: 'Jonatan Pie',        user: 'r3dmax' },
-  { url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=80', desc: 'Côte rocheuse',   name: 'Alex Azabache',      user: 'alexazabache' },
-  { url: 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1920&q=80', desc: 'Aurore boréale',  name: 'Lightscape',         user: 'lightscape' },
-  { url: 'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=1920&q=80', desc: 'Lac miroir',      name: 'Dave Hoefler',       user: 'davehoefler' },
-  { url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1920&q=80', desc: 'Ciel orageux',    name: 'Raychel Sanner',     user: 'raychelsanner' },
-  { url: 'https://images.unsplash.com/photo-1455218873509-8097305ee378?w=1920&q=80', desc: 'Forêt de bambou', name: 'Luca Bravo',         user: 'lucabravo' },
-  { url: 'https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=1920&q=80', desc: 'Vallée alpine',   name: 'Ales Krivec',        user: 'aleskrivec' },
-  { url: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1920&q=80', desc: 'Tulipes',         name: 'Ylanite Koppens',    user: 'anete_lusina' },
-  { url: 'https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=1920&q=80', desc: 'Lever de soleil', name: 'Dawid Zawiła',       user: 'davealmine' },
-  { url: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=1920&q=80', desc: 'Lune sur la mer', name: 'Yoann Boyer',        user: 'yoannboyer' },
-  { url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&q=80', desc: 'Prairie dorée',   name: 'Ales Krivec',        user: 'aleskrivec' },
-  { url: 'https://images.unsplash.com/photo-1414609245224-aea64ab47cb3?w=1920&q=80', desc: 'Fjord',           name: 'John Towner',        user: 'heytowner' },
-  { url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=80', desc: 'Falaises',        name: 'Alex Azabache',      user: 'alexazabache' },
-  { url: 'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1920&q=80', desc: 'Rayons de soleil',name: 'Fabrice Villard',    user: 'fabulu' },
-  { url: 'https://images.unsplash.com/photo-1491555103944-7c647fd857e6?w=1920&q=80', desc: 'Montagne enneigée',name:'Kace Rodriguez',    user: 'kace_rod' },
-  { url: 'https://images.unsplash.com/photo-1518098268026-4e89f1a2cd8e?w=1920&q=80', desc: 'Nuit étoilée',   name: 'Benjamin Voros',     user: 'vorosbenj' },
-  { url: 'https://images.unsplash.com/photo-1465189684280-6a8fa9b19a7a?w=1920&q=80', desc: 'Dune de sable',  name: 'USGS',               user: 'usgs' },
-  { url: 'https://images.unsplash.com/photo-1500043204854-6cb9aba28745?w=1920&q=80', desc: 'Volcan',          name: 'Clint McKoy',        user: 'clintmckoy' },
-  { url: 'https://images.unsplash.com/photo-1484291470158-b8f8d608850d?w=1920&q=80', desc: 'Fjord norvégien', name: 'Arto Marttinen',     user: 'wandervisions' },
-  { url: 'https://images.unsplash.com/photo-1552083375-1447ce886485?w=1920&q=80', desc: 'Cerisiers',       name: 'kazuend',            user: 'kazuend' },
+  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80', desc: 'Montagne',         name: 'Samuel Ferrara',    user: 'samferrara' },
+  { url: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80', desc: 'Lac de montagne',  name: 'Tom Mrazek',        user: 'tommrazek' },
+  { url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=80', desc: 'Forêt verte',      name: 'Paul Gilmore',      user: 'paulgilmore_' },
+  { url: 'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=1920&q=80', desc: 'Désert',           name: 'Ian Keefe',         user: 'iankeefe' },
+  { url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80', desc: 'Plage tropicale',  name: 'Sean O. Rourke',    user: 'sean_orourke' },
+  { url: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=1920&q=80', desc: 'Champs jaune',     name: 'Geetanjal Khanna',  user: 'geetanjalkh' },
+  { url: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1920&q=80', desc: 'Cascade',          name: 'Nitish Meena',      user: 'nitishm' },
+  { url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80', desc: 'Cimes enneigées',  name: 'Kalen Emsley',      user: 'kalenemsley' },
+  { url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80', desc: 'Voie lactée',      name: 'Vincentiu Solomon', user: 'vincentiu_solomon' },
+  { url: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80', desc: 'Forêt mystique',   name: 'Lukasz Szmigiel',   user: 'szmigieldesign' },
+  { url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1920&q=80', desc: 'Brume matinale',   name: 'Jonatan Pie',       user: 'r3dmax' },
+  { url: 'https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1920&q=80', desc: 'Côte rocheuse',    name: 'Alex Azabache',     user: 'alexazabache' },
+  { url: 'https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1920&q=80', desc: 'Aurore boréale',   name: 'Lightscape',        user: 'lightscape' },
+  { url: 'https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=1920&q=80', desc: 'Lac miroir',       name: 'Dave Hoefler',      user: 'davehoefler' },
+  { url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1920&q=80', desc: 'Ciel orageux',     name: 'Raychel Sanner',    user: 'raychelsanner' },
+  { url: 'https://images.unsplash.com/photo-1455218873509-8097305ee378?w=1920&q=80', desc: 'Forêt de bambou',  name: 'Luca Bravo',        user: 'lucabravo' },
+  { url: 'https://images.unsplash.com/photo-1511884642898-4c92249e20b6?w=1920&q=80', desc: 'Vallée alpine',    name: 'Ales Krivec',       user: 'aleskrivec' },
+  { url: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=1920&q=80', desc: 'Tulipes',          name: 'Ylanite Koppens',   user: 'anete_lusina' },
+  { url: 'https://images.unsplash.com/photo-1505144808419-1957a94ca61e?w=1920&q=80', desc: 'Lever de soleil',  name: 'Dawid Zawiła',      user: 'davealmine' },
+  { url: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?w=1920&q=80', desc: 'Lune sur la mer',  name: 'Yoann Boyer',       user: 'yoannboyer' },
+  { url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&q=80', desc: 'Prairie dorée',    name: 'Ales Krivec',       user: 'aleskrivec' },
+  { url: 'https://images.unsplash.com/photo-1414609245224-aea64ab47cb3?w=1920&q=80', desc: 'Fjord',            name: 'John Towner',       user: 'heytowner' },
+  { url: 'https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=1920&q=80', desc: 'Rayons de soleil', name: 'Fabrice Villard',   user: 'fabulu' },
+  { url: 'https://images.unsplash.com/photo-1491555103944-7c647fd857e6?w=1920&q=80', desc: 'Montagne enneigée',name: 'Kace Rodriguez',    user: 'kace_rod' },
+  { url: 'https://images.unsplash.com/photo-1518098268026-4e89f1a2cd8e?w=1920&q=80', desc: 'Nuit étoilée',    name: 'Benjamin Voros',    user: 'vorosbenj' },
+  { url: 'https://images.unsplash.com/photo-1465189684280-6a8fa9b19a7a?w=1920&q=80', desc: 'Dune de sable',   name: 'USGS',              user: 'usgs' },
+  { url: 'https://images.unsplash.com/photo-1500043204854-6cb9aba28745?w=1920&q=80', desc: 'Volcan',           name: 'Clint McKoy',       user: 'clintmckoy' },
+  { url: 'https://images.unsplash.com/photo-1484291470158-b8f8d608850d?w=1920&q=80', desc: 'Fjord norvégien',  name: 'Arto Marttinen',    user: 'wandervisions' },
+  { url: 'https://images.unsplash.com/photo-1552083375-1447ce886485?w=1920&q=80', desc: 'Cerisiers',       name: 'kazuend',           user: 'kazuend' },
 ];
 
 function initBackgrounds() {
@@ -1035,13 +979,20 @@ function startCarousel() {
   stopCarousel();
   currentBgIndex = 0;
   bgImages = [...BACKGROUNDS.keys()].sort(() => Math.random() - 0.5);
-  setBg(0, true);
-  preloadImage(BACKGROUNDS[bgImages[1 % bgImages.length]].url);
+
+  // FIX : premier fond chargé via preloadImage comme les suivants
+  // → évite le flash blanc au premier lancement
+  preloadImage(BACKGROUNDS[bgImages[0]].url).then(() => {
+    setBg(0, true);
+    preloadImage(BACKGROUNDS[bgImages[1 % bgImages.length]].url);
+  });
+
   bgIntervalId = setInterval(() => {
     currentBgIndex = (currentBgIndex + 1) % bgImages.length;
     setBg(currentBgIndex);
     preloadImage(BACKGROUNDS[bgImages[(currentBgIndex + 1) % bgImages.length]].url);
   }, bgInterval * 1000);
+
   document.getElementById('photo-credit').style.display = '';
 }
 
@@ -1051,9 +1002,7 @@ function stopCarousel() {
 
 function applyCustomBg(dataUrl) {
   stopCarousel();
-  // Masquer les deux slides du carrousel
   bgSlides.forEach(s => s.classList.remove('active'));
-  // Appliquer directement sur le conteneur bg
   document.getElementById('bg-container').style.backgroundImage = `url('${dataUrl}')`;
   document.getElementById('bg-container').style.backgroundSize = 'cover';
   document.getElementById('bg-container').style.backgroundPosition = 'center';
@@ -1063,7 +1012,7 @@ function applyCustomBg(dataUrl) {
 function resetToCarousel() {
   document.getElementById('bg-container').style.backgroundImage = '';
   customBg = null;
-  localStorage.removeItem(STORAGE_BG_KEY);
+  safeStorage('remove', STORAGE_BG_KEY);
   startCarousel();
   updateBgPanel();
 }
@@ -1073,14 +1022,14 @@ let activeSlot = 0;
 function preloadImage(url) {
   return new Promise((resolve) => {
     const img = new Image();
-    img.onload = () => resolve(true);
+    img.onload  = () => resolve(true);
     img.onerror = () => resolve(false);
     img.src = url;
   });
 }
 
 function setBg(idx, immediate = false) {
-  const bg = BACKGROUNDS[bgImages[idx]];
+  const bg       = BACKGROUNDS[bgImages[idx]];
   const nextSlot = 1 - activeSlot;
   const prevSlot = activeSlot;
 
@@ -1112,11 +1061,10 @@ function setBg(idx, immediate = false) {
   }
 }
 
-initBackgrounds();
-
 // ═══════════════════════════════════════════
 //  RENDU DES TUILES
 // ═══════════════════════════════════════════
+
 function renderTiles() {
   const grid = document.getElementById('tiles-grid');
   grid.innerHTML = '';
@@ -1129,19 +1077,12 @@ function renderTiles() {
     const iconDiv = document.createElement('div');
     iconDiv.className = 'tile-icon';
 
-    // Créer l'img et laisser loadFaviconOrFallback décider favicon vs initiales
     const img = document.createElement('img');
     img.alt = tile.name;
-    try {
-      const origin = new URL(tile.url).origin;
-      const faviconUrl = `https://www.google.com/s2/favicons?domain=${origin}&sz=64`;
-      loadFaviconOrFallback(faviconUrl, tile.name, img);
-    } catch {
-      img.src = makeInitialsIcon(tile.name);
-    }
+    // FIX : appel à resolveIcon (fonction centralisée) au lieu de dupliquer le try/catch
+    resolveIcon(tile.url, tile.name, img);
     iconDiv.appendChild(img);
 
-    // Bouton supprimer
     const delBtn = document.createElement('button');
     delBtn.className = 'tile-delete';
     delBtn.innerHTML = '×';
@@ -1161,13 +1102,9 @@ function renderTiles() {
     div.appendChild(iconDiv);
     div.appendChild(label);
 
-    // Clic : en mode édition → modifier, sinon → ouvrir
     div.addEventListener('click', () => {
-      if (editMode) {
-        openModal(tile.id);
-      } else {
-        window.open(tile.url, '_blank');
-      }
+      if (editMode) openModal(tile.id);
+      else window.open(tile.url, '_blank');
     });
 
     grid.appendChild(div);
@@ -1198,23 +1135,24 @@ function renderTiles() {
 // ═══════════════════════════════════════════
 //  MODAL
 // ═══════════════════════════════════════════
+
 function openModal(id) {
   editingId = id;
-  const overlay = document.getElementById('modal-overlay');
-  const title = document.getElementById('modal-title');
+  const overlay   = document.getElementById('modal-overlay');
+  const title     = document.getElementById('modal-title');
   const inputName = document.getElementById('input-name');
-  const inputUrl = document.getElementById('input-url');
+  const inputUrl  = document.getElementById('input-url');
 
   if (id) {
     const tile = tiles.find(t => t.id === id);
     title.textContent = 'Modifier le raccourci';
     inputName.value = tile.name;
-    inputUrl.value = tile.url;
+    inputUrl.value  = tile.url;
     updatePreview(tile.name, tile.url);
   } else {
     title.textContent = 'Ajouter un raccourci';
     inputName.value = '';
-    inputUrl.value = '';
+    inputUrl.value  = '';
     updatePreview('', '');
   }
 
@@ -1227,23 +1165,15 @@ function closeModal() {
 }
 
 function updatePreview(name, url) {
-  const img = document.getElementById('preview-favicon');
+  const img  = document.getElementById('preview-favicon');
   const span = document.getElementById('preview-name');
   span.textContent = name || 'Aperçu';
-  img.style.display = 'block';
   if (!name && !url) {
-    img.src = '';
-    img.style.display = 'none';
-    return;
+    img.src = ''; img.style.display = 'none'; return;
   }
-  try {
-    const origin = new URL(url).origin;
-    const faviconUrl = `https://www.google.com/s2/favicons?domain=${origin}&sz=64`;
-    loadFaviconOrFallback(faviconUrl, name || url, img);
-  } catch {
-    img.src = name ? makeInitialsIcon(name) : '';
-    img.style.display = name ? 'block' : 'none';
-  }
+  img.style.display = 'block';
+  // FIX : appel à resolveIcon au lieu de dupliquer la logique favicon
+  resolveIcon(url, name || url, img);
 }
 
 document.getElementById('input-url').addEventListener('input', (e) => {
@@ -1260,14 +1190,18 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
 
 document.getElementById('modal-save').addEventListener('click', () => {
   const name = document.getElementById('input-name').value.trim();
-  let url = document.getElementById('input-url').value.trim();
+  let url    = document.getElementById('input-url').value.trim();
   if (!name || !url) return;
   if (!url.startsWith('http')) url = 'https://' + url;
 
   if (editingId) {
     tiles = tiles.map(t => t.id === editingId ? { ...t, name, url } : t);
   } else {
-    tiles.push({ id: Date.now().toString(), name, url });
+    // FIX : ID unique garanti avec crypto.randomUUID() si disponible
+    const id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : Date.now().toString(36) + Math.random().toString(36).slice(2);
+    tiles.push({ id, name, url });
   }
   saveTiles();
   renderTiles();
@@ -1277,6 +1211,7 @@ document.getElementById('modal-save').addEventListener('click', () => {
 // ═══════════════════════════════════════════
 //  TOAST
 // ═══════════════════════════════════════════
+
 let toastTimer = null;
 function showToast(msg, isError = false) {
   const toast = document.getElementById('toast');
@@ -1290,29 +1225,22 @@ function showToast(msg, isError = false) {
 // ═══════════════════════════════════════════
 //  PANNEAU PARAMÈTRES
 // ═══════════════════════════════════════════
+
 const settingsBtn   = document.getElementById('settings-btn');
 const settingsPanel = document.getElementById('settings-panel');
 
-function openSettings() {
-  settingsBtn.classList.add('open');
-  settingsPanel.classList.add('open');
-  updateSettingsPanel();
-}
-function closeSettings() {
-  settingsBtn.classList.remove('open');
-  settingsPanel.classList.remove('open');
-}
-function toggleSettings() {
-  settingsPanel.classList.contains('open') ? closeSettings() : openSettings();
-}
+function openSettings()   { settingsBtn.classList.add('open'); settingsPanel.classList.add('open'); updateSettingsPanel(); }
+function closeSettings()  { settingsBtn.classList.remove('open'); settingsPanel.classList.remove('open'); }
+function toggleSettings() { settingsPanel.classList.contains('open') ? closeSettings() : openSettings(); }
 
 settingsBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleSettings(); });
 document.getElementById('sp-close').addEventListener('click', closeSettings);
 
-// Fermer en cliquant ailleurs
 document.addEventListener('click', (e) => {
   if (!settingsPanel.contains(e.target) && e.target !== settingsBtn) closeSettings();
 });
+
+function updateBgPanel() { updateSettingsPanel(); }
 
 function updateSettingsPanel() {
   // Moteurs de recherche
@@ -1329,13 +1257,11 @@ function updateSettingsPanel() {
   document.getElementById('sp-opt-carousel').classList.toggle('active', !isCustom);
   document.getElementById('sp-opt-custom').classList.toggle('active', isCustom);
 
-  // Slider intervalle : synchroniser avec la valeur en cours
+  // Slider intervalle
   const slider = document.getElementById('sp-interval-slider');
   slider.value = bgInterval;
   updateIntervalLabel(bgInterval);
-
-  // Masquer le slider si image perso active (inutile dans ce cas)
-  document.getElementById('sp-interval-row').style.opacity = isCustom ? '0.35' : '1';
+  document.getElementById('sp-interval-row').style.opacity       = isCustom ? '0.35' : '1';
   document.getElementById('sp-interval-row').style.pointerEvents = isCustom ? 'none' : '';
 
   const preview = document.getElementById('sp-bg-preview');
@@ -1361,16 +1287,13 @@ function updateIntervalLabel(seconds) {
   }
 }
 
-// Slider : mise à jour en temps réel de l'affichage
 document.getElementById('sp-interval-slider').addEventListener('input', (e) => {
   updateIntervalLabel(parseInt(e.target.value));
 });
-
-// Slider : appliquer quand on relâche
 document.getElementById('sp-interval-slider').addEventListener('change', (e) => {
   bgInterval = parseInt(e.target.value);
-  localStorage.setItem(STORAGE_INT_KEY, bgInterval);
-  if (!customBg) startCarousel(); // relancer avec le nouvel intervalle
+  safeStorage('set', STORAGE_INT_KEY, bgInterval);
+  if (!customBg) startCarousel();
   showToast(`Intervalle : ${document.getElementById('sp-interval-label').textContent}`);
 });
 
@@ -1386,8 +1309,8 @@ document.getElementById('sp-edit-toggle').addEventListener('click', () => {
 document.getElementById('sp-export').addEventListener('click', () => {
   const data = JSON.stringify(tiles, null, 2);
   const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
   a.href = url; a.download = 'portail-raccourcis.json'; a.click();
   URL.revokeObjectURL(url);
   showToast(`${tiles.length} raccourcis exportés`);
@@ -1407,9 +1330,13 @@ document.getElementById('import-file-input').addEventListener('change', (e) => {
       if (!Array.isArray(imported)) throw new Error('Format invalide');
       const valid = imported.filter(t => t.name && t.url);
       if (valid.length === 0) throw new Error('Aucun raccourci valide trouvé');
+      // FIX : IDs garantis uniques à l'import via crypto.randomUUID
       tiles = valid.map(t => ({
-        id: t.id || Date.now().toString() + Math.random(),
-        name: String(t.name), url: String(t.url),
+        id: (typeof crypto !== 'undefined' && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : Date.now().toString(36) + Math.random().toString(36).slice(2),
+        name: String(t.name),
+        url:  String(t.url),
       }));
       saveTiles(); renderTiles();
       showToast(`${tiles.length} raccourcis importés`);
@@ -1423,7 +1350,6 @@ document.getElementById('import-file-input').addEventListener('change', (e) => {
 document.getElementById('sp-opt-carousel').addEventListener('click', () => {
   if (!customBg) return;
   resetToCarousel();
-  updateSettingsPanel();
   showToast('Carrousel Unsplash rétabli');
 });
 
@@ -1437,6 +1363,11 @@ document.getElementById('sp-bg-preview').addEventListener('click', () => {
 document.getElementById('bg-file-input').addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
+  // FIX : validation du type MIME réel en plus de la taille
+  if (!file.type.startsWith('image/')) {
+    showToast('Le fichier doit être une image', true);
+    e.target.value = ''; return;
+  }
   if (file.size > 5 * 1024 * 1024) {
     showToast('Image trop lourde (max 5 Mo)', true);
     e.target.value = ''; return;
@@ -1445,7 +1376,7 @@ document.getElementById('bg-file-input').addEventListener('change', (e) => {
   reader.onload = (ev) => {
     try {
       customBg = ev.target.result;
-      localStorage.setItem(STORAGE_BG_KEY, customBg);
+      safeStorage('set', STORAGE_BG_KEY, customBg);
       applyCustomBg(customBg);
       updateSettingsPanel();
       showToast('Image de fond appliquée ✨');
@@ -1465,7 +1396,7 @@ document.getElementById('sp-engines').addEventListener('click', (e) => {
   showToast(`Moteur : ${ENGINES[key].name}`);
 });
 
-// Touche Entrée dans la recherche → naviguer si c'est une URL
+// ── Raccourcis clavier modal ──
 document.getElementById('input-url').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('modal-save').click();
 });
@@ -1476,10 +1407,17 @@ document.getElementById('input-name').addEventListener('keydown', e => {
 // ═══════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════
-renderTiles();
-applyEngine(currentEngine);
-document.getElementById('sp-interval-slider').value = bgInterval;
-updateIntervalLabel(bgInterval);
+
+// FIX : attendre document.fonts.ready avant de lancer le rendu
+// pour que makeInitialsIcon utilise bien la fonte Outfit
+document.fonts.ready.then(() => {
+  buildEnginesPanel();
+  renderTiles();
+  applyEngine(currentEngine);
+  document.getElementById('sp-interval-slider').value = bgInterval;
+  updateIntervalLabel(bgInterval);
+  initBackgrounds();
+});
 </script>
 </body>
 </html>
